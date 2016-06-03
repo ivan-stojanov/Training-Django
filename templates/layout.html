@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static from staticfiles %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}{% endblock %}</title>
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+        {% block css %}{% endblock %}
+        <meta class="foundation-mq">
+    </head>
+    <body>
+        <header>
+            <div class="content-wrapper">
+                <div class="float-left">
+                    <a href="https://scopicsoftware.com/" target="_blank">
+                        <img src="{% static 'img/logo.jpg' %}" height="80" title="Scopic Software - Training" />
+                    </a>
+                </div>
+                <div class="float-right">
+                    <nav>
+                        <ul id="menu">
+							<li><a href="{% url 'home' %}">Home</a></li>
+                            <li><a href="{% url 'stock:list' %}">Inventory List</a></li>
+                            <li><a href="{% url 'stock:dashboard' %}">Dashboard</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <div id="body">
+            <section class="content-wrapper main-content clear-fix">
+               {% block content %}{% endblock %}
+            </section>
+        </div>
+        <footer>
+            <div class="content-wrapper">
+                <div class="float-left">
+                    <p>&copy; 2016 - Ivan Stojanov / 
+                        <a href="mailto:ivan.s@scopicsoftware.com" target="_blank">ivan.s@scopicsoftware.com</a></p>
+                </div>
+            </div>
+        </footer>
+		{% block javascript %}{% endblock %}
+    </body>
+</html>
