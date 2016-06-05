@@ -23,7 +23,7 @@
     
     	<h3>List of items:</h3>    	
     	<p>
-    		<a>Create New</a>
+    		<a href="{% url 'stock:create' %}">Create New</a>
 		</p>
     	
 		{% if inventories %}
@@ -68,14 +68,14 @@
 		            </td>
 		            <td style="text-align:center">
 		                {% if inventory.photo %}
-		                    <img width="150px" src="{{ inventory.photo.url  }}"/>
+		                    <img width="150px" src="{{ inventory.photo.url }}"/>
 		                {% else %}
 		                    /
-		                {% endif %}   
+		                {% endif %}
 		            </td>
 		            <td>
-		                <a>Edit</a> |
-		                <a>Details</a> |
+		                <a href="{% url 'stock:edit' pk=inventory.pk %}">Edit</a> |
+		                <a href="{% url 'stock:details' pk=inventory.pk %}">Details</a> |
 		                <a>Delete</a>
 		            </td>
 		        </tr>

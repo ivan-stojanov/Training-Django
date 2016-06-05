@@ -1,0 +1,72 @@
+{% extends "stock/layout.html" %}
+
+{% block title %}Inventory Details{% endblock %}
+
+{% block content %}
+    <div class="row">
+
+		<p>
+		    <a href="{% url 'stock:edit' pk=inventory.pk %}">Edit</a> |
+		    <a href="{% url 'stock:list' %}">Back to List</a>
+		</p>
+
+		<h2>Details</h2>
+		
+		<fieldset>
+		    <legend>Inventory</legend>
+		
+		    <div class="editor-label">
+		        Item Name
+		    </div>
+		    <div class="editor-field">
+		    	<input value="{{ inventory.name }}" disabled />
+		    </div>
+		
+		    <div class="editor-label">
+		        Serial Number
+		    </div>
+		    <div class="editor-field">
+		    	<input value="{{ inventory.serial_number }}" disabled />
+		    </div>
+		
+		    <div class="editor-label">
+		        Price
+		    </div>
+		    <div class="editor-field">
+		        <input value="{{ inventory.price }}" disabled /> $
+		    </div>
+		
+		    <div class="editor-label">
+		        Description
+		    </div>
+		    <div class="editor-field">
+		        <textarea rows="3" disabled>{{ inventory.description }}</textarea>
+		    </div>
+		
+		    <div class="editor-label">
+		        Color
+		    </div>
+		    <div class="editor-field">
+		        <input value="{{ inventory.color.color_name }}" disabled />
+		    </div>
+		
+		    <div class="editor-label">
+		        Item Type
+		    </div>
+		    <div class="editor-field">
+		        <input value="{{ inventory.itemType.type_name }}" disabled />
+		    </div>
+		
+		    {% if inventory.photo %}
+		        <div class="editor-label">
+		            Photo
+		        </div>
+		            
+		        <div class="display-label">
+		            <img src="{{ inventory.photo.url }}" />
+		        </div>
+		    {% endif %}
+		</fieldset>
+    	
+	</div>
+{% endblock %}
