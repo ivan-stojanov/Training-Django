@@ -31,7 +31,19 @@
         </header>
         <div id="body">
             <section class="content-wrapper main-content clear-fix">
-               {% block content %}{% endblock %}
+		    	{% if messages %}
+		        	<div class="row">
+		        		<div class="small-6 small-centered columns">
+		        			{% for message in messages %}
+		        				<div data-alert class="alert-box {{ message.tags }} radius">
+		        					{{ message }}
+		        					<a href="#" class="close">&times;</a>
+		        				</div>
+		        			{% endfor %}
+		        		</div>        	
+		        	</div>
+		        {% endif %}            
+            	{% block content %}{% endblock %}
             </section>
         </div>
         <footer>

@@ -6,8 +6,11 @@ class ItemType(models.Model):
     type_name = models.CharField(max_length=255)
     type_notes = models.TextField()
     
+    class Meta:
+        verbose_name_plural = "Item Types"
+    
     def __str__(self):
-        return self.type
+        return self.type_name
     
     
 class Color(models.Model):
@@ -27,8 +30,12 @@ class Inventory(models.Model):
     photo = models.FileField()
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    type = models.ForeignKey(ItemType)
+    itemType = models.ForeignKey(ItemType)
     color = models.ForeignKey(Color, null=True)
+    
+    class Meta:
+        verbose_name_plural = "Inventories"
+        
     
     def __str__(self):
         return self.name

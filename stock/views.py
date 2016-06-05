@@ -1,13 +1,18 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
+from . import models
 
 # Create your views here.
 def inventory_list(request):
-    return render(request, 'stock/inventory_list.html')
-    return HttpResponse("home page of the inventory_list")
+    inventories = models.Inventory.objects.filter(
+         is_available=True
+    )
+    return render(request, 'stock/inventory_list.html', {
+        'inventories': inventories
+    })
+
 
 def dashboard(request):
     return render(request, 'stock/dashboard.html')
-    return HttpResponse("home page of the dashboard")
 
 

@@ -4,6 +4,86 @@
 
 {% block content %}
     <div class="row">
-    	<h1>Welcome at Inventory List!</h1>
+ 
+		<form method="get">
+		
+		    <input type="search" name="searchTerm" value=""/>
+		    <select name="searchType" class="customDropDown">
+		        <option value=""> All Criterias </option>
+		        <option value="ItemName"    >Item Name</option>
+		        <option value="SerialNumber">Serial Number</option>
+		        <option value="Price"       >Price</option>
+		        <option value="Weight"      >Weight</option>
+		        <option value="Color"       >Color</option>
+		        <option value="ItemType"    >Item Type</option>
+		    </select>
+		    <input type="submit" value="Search By Name" />
+		
+		</form>
+    
+    	<h3>List of items:</h3>    	
+    	<p>
+    		<a>Create New</a>
+		</p>
+    	
+		{% if inventories %}
+		    <table>
+		        <tr>
+		            <th width="15%">
+		            	<a title = "Click to reorder list">Item Name</a>
+		             </th>
+		            <th width="15%">
+		            	<a title = "Click to reorder list">Serial Number</a>						
+		            </th>
+		            <th width="10%">
+		            	<a title = "Click to reorder list">Price</a>
+		            </th>
+		            <th width="10%">
+		            	<a title = "Click to reorder list">Color</a>						
+		            </th>
+		            <th>
+		           		<a title = "Click to reorder list">Item Type</a>
+		            </th>
+		            <th>
+						Photo
+		            </th>
+		            <th width="15%"></th>
+		        </tr>
+		     {% for inventory in inventories %}
+		        <tr>
+		            <td>
+		                {{ inventory.name }}
+		            </td>
+		            <td>
+		                {{ inventory.serial_number }}
+		            </td>
+		            <td>
+		               {{ inventory.price }} $
+		            </td>
+		            <td>
+		                {{ inventory.color.color_name }}
+		            </td>
+		            <td>
+		                {{ inventory.itemType.type_name }}
+		            </td>
+		            <td style="text-align:center">
+		                {% if inventory.photo %}
+		                    <img width="150px" src="{{ inventory.photo.url  }}"/>
+		                {% else %}
+		                    /
+		                {% endif %}   
+		            </td>
+		            <td>
+		                <a>Edit</a> |
+		                <a>Details</a> |
+		                <a>Delete</a>
+		            </td>
+		        </tr>
+		    {% endfor %}
+		    </table>
+		{% else %}
+    		<div><p class="no-result">No inventory items were found for entered criteria.</p></div>
+		{% endif %}   	
+    	
 	</div>
 {% endblock %}
