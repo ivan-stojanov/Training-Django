@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Q, Sum, Count
 import logging
 
 from . import forms
@@ -187,6 +187,17 @@ def inventory_search(request):
 
 
 def dashboard(request):
-    return render(request, 'stock/dashboard.html')
+    inventories = models.Inventory.objects.filter(
+         is_available=True
+    )
+    statistics = {}
+    statistics['total_items'] = inventories.count()
+    total_price = inventories.aggregate(total=Sum('price'))
+    statistics['average_price'] = total_price['total'] / float(statistics['total_items'])    
+    statistics['count_by_type'] = inventories.values('itemType__type_name').annotate(count=Count('itemType__type_name')).order_by('itemType__type_name')
+    
+    return render(request, 'stock/dashboard.html',{
+        'statistics': statistics
+    })
 
 
