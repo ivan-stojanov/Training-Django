@@ -54,6 +54,10 @@
                 </div>
             </div>
         </footer>
-		{% block javascript %}{% endblock %}
+		{% block javascript %}
+			{% load static from staticfiles %}
+			<script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+			<script src="{% static 'js/main.js' %}"></script>
+		{% endblock %}
     </body>
 </html>

@@ -505,6 +505,13 @@ textarea {
     font-weight: bold;
 }
 
+.errorlist {
+    color: #e80c4d;
+    font-weight: bold;
+    list-style-type: none;
+    padding: 0px;
+}
+
 .field-validation-valid {
     display: none;
 }
@@ -782,7 +789,7 @@ table, tr, td {
     padding: 10px;
 }
 
-.noteMsg {
+.noteMsg, .alert-box.success.radius {
     background: aquamarine;
     text-align: center;
     font-size: 16px;
@@ -790,6 +797,14 @@ table, tr, td {
     font-style: italic;
     border: 2px solid violet;
     color: darkblue;
+}
+
+.alert-box.success.radius a.close {
+    float: right;
+    vertical-align: middle;
+    color: red;
+    margin-top: -2px;
+    text-decoration: none;
 }
 
 .no-result {

@@ -1,0 +1,25 @@
+{% extends "stock/layout.html" %}
+
+{% block title %}Inventory Create{% endblock %}
+
+{% block content %}
+    <div class="row">
+		    
+		{% if form.instance.name %}
+			<h2>Edit Inventory</h2>
+		{% else %}
+			<h2>Create Inventory</h2>
+		{% endif %}
+		
+		<form method="POST" action="" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<input type="submit" class="button" value="Save">
+		</form>
+		
+		<div>
+		    <a href="{% url 'stock:list' %}">Back to List</a>
+		</div>    
+    	
+	</div>
+{% endblock %}

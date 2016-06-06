@@ -82,7 +82,7 @@
 		            <td>
 		                <a href="{% url 'stock:edit' pk=inventory.pk %}">Edit</a> |
 		                <a href="{% url 'stock:details' pk=inventory.pk %}">Details</a> |
-		                <a>Delete</a>
+		                <a class="delete-btn" href="{% url 'stock:delete' pk=inventory.pk %}">Delete</a>
 		            </td>
 		        </tr>
 		    {% endfor %}
@@ -93,3 +93,9 @@
     	
 	</div>
 {% endblock %}
+
+
+{% block javascript %}
+	{{ block.super }}
+	<script src="/static/stock/js/inventory_list.js"></script>
+{% endblock javascript %}

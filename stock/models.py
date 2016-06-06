@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 # Create your models here.
@@ -34,8 +35,12 @@ class Inventory(models.Model):
     color = models.ForeignKey(Color, null=True)
     
     class Meta:
-        verbose_name_plural = "Inventories"
+        verbose_name_plural = "Inventories"        
         
+    def get_absolute_url(self):
+        return reverse('stock:details', kwargs={
+            'pk': self.id
+        })        
     
     def __str__(self):
         return self.name
