@@ -26,7 +26,7 @@ class Inventory(models.Model):
     serial_number = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()
-    weight = models.FloatField
+    weight = models.FloatField(null=True)
     photo = models.FileField()
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

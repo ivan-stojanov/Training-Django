@@ -29,14 +29,17 @@
 		{% if inventories %}
 		    <table>
 		        <tr>
-		            <th width="15%">
+		            <th width="13%">
 		            	<a title = "Click to reorder list">Item Name</a>
 		             </th>
-		            <th width="15%">
+		            <th width="13%">
 		            	<a title = "Click to reorder list">Serial Number</a>						
 		            </th>
 		            <th width="10%">
 		            	<a title = "Click to reorder list">Price</a>
+		            </th>
+		            <th width="10%">
+		            	<a title = "Click to reorder list">Weight</a>
 		            </th>
 		            <th width="10%">
 		            	<a title = "Click to reorder list">Color</a>						
@@ -59,6 +62,9 @@
 		            </td>
 		            <td>
 		               {{ inventory.price }} $
+		            </td>
+		            <td>
+		               {{ inventory.weight }}
 		            </td>
 		            <td>
 		                {{ inventory.color.color_name }}
