@@ -1,13 +1,18 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.db.models import Q
+import logging
 
 from . import forms
 from . import models
 
+# Standard instance of a logger with __name__
+logger = logging.getLogger(__name__)
+
 # Create your views here.
-def inventory_list(request):
+def inventory_list(request): 
     inventories = models.Inventory.objects.filter(
          is_available=True
     )
@@ -76,6 +81,109 @@ def inventory_delete(request, pk):
                      "Inventory Deleted: {}!".format(inventory.name))
     inventory.delete();
     return HttpResponseRedirect(reverse('stock:list')) 
+
+
+def inventory_search(request):
+    if request.method == 'POST':
+        search_text = request.POST['search_term']
+        search_criteria = request.POST['search_type']
+    else:
+        search_text = ''
+        search_criteria = ''
+
+    sort = {}
+    sort['name'] = "sort-asc"
+    sort['serial_number'] = "sort-asc"
+    sort['price'] = "sort-asc"
+    sort['weight'] = "sort-asc"
+    sort['color'] = "sort-asc"
+    sort['itemType'] = "sort-asc"        
+        
+    if search_criteria == "ItemName":
+        inventories = models.Inventory.objects.filter(
+             name__icontains=search_text,
+             is_available=True
+        )
+    elif search_criteria == "SerialNumber":
+        inventories = models.Inventory.objects.filter(
+             serial_number__icontains=search_text,
+             is_available=True
+        )     
+    elif search_criteria == "Price":
+        inventories = models.Inventory.objects.filter(
+             price__icontains=search_text,
+             is_available=True
+        ) 
+    elif search_criteria == "Weight":
+        inventories = models.Inventory.objects.filter(
+             weight__icontains=search_text,
+             is_available=True
+        )
+    elif search_criteria == "Color":
+        inventories = models.Inventory.objects.filter(
+            color__color_name__icontains=search_text,
+            is_available=True
+        )      
+    elif search_criteria == "ItemType":
+        inventories = models.Inventory.objects.filter(
+            itemType__type_name__icontains=search_text,
+            is_available=True
+        )       
+    else:  
+        inventories = models.Inventory.objects.filter(
+             Q(name__icontains=search_text)|Q(serial_number__icontains=search_text)|
+             Q(price__icontains=search_text)|Q(weight__icontains=search_text)|
+             Q(color__color_name__icontains=search_text)|Q(itemType__type_name__icontains=search_text),
+             is_available=True
+        )
+        
+    if request.POST['sort_by_item'] and request.POST['sort_by_item'] == "name":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['name'] = "sort-desc"
+            inventories = inventories.order_by("name")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['name'] = "sort-asc"
+            inventories = inventories.order_by("-name")
+    elif request.POST['sort_by_item'] and request.POST['sort_by_item'] == "serial_number":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['serial_number'] = "sort-desc"
+            inventories = inventories.order_by("serial_number")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['serial_number'] = "sort-asc"
+            inventories = inventories.order_by("-serial_number")
+    elif request.POST['sort_by_item'] and request.POST['sort_by_item'] == "price":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['price'] = "sort-desc"
+            inventories = inventories.order_by("price")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['price'] = "sort-asc"
+            inventories = inventories.order_by("-price")
+    elif request.POST['sort_by_item'] and request.POST['sort_by_item'] == "weight":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['weight'] = "sort-desc"
+            inventories = inventories.order_by("weight")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['weight'] = "sort-asc"
+            inventories = inventories.order_by("-weight")
+    elif request.POST['sort_by_item'] and request.POST['sort_by_item'] == "color":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['color'] = "sort-desc"
+            inventories = inventories.order_by("color__color_name")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['color'] = "sort-asc"
+            inventories = inventories.order_by("-color__color_name")
+    elif request.POST['sort_by_item'] and request.POST['sort_by_item'] == "itemType":
+        if request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "ASC":
+            sort['itemType'] = "sort-desc"
+            inventories = inventories.order_by("itemType__type_name")
+        elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
+            sort['itemType'] = "sort-asc"
+            inventories = inventories.order_by("-itemType__type_name")  
+        
+    return render_to_response('stock/ajax_search.html',{
+        'inventories': inventories,
+        'sort': sort
+    })
 
 
 def dashboard(request):

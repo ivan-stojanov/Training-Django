@@ -10,9 +10,11 @@ urlpatterns = [
     url(r'inventory/edit/(?P<pk>\d+)/$', views.inventory_edit, 
         name='edit'),
     url(r'inventory/delete/(?P<pk>\d+)/$', views.inventory_delete, 
-        name='delete'),               
+        name='delete'),
     url(r'inventory/create/$', views.inventory_create, 
-        name='create'),              
+        name='create'),
+    url(r'inventory/search/$', views.inventory_search, 
+        name='search'),
     url(r'dashboard/$', views.dashboard,
         name='dashboard'),
 ]
