@@ -19,8 +19,7 @@ def inventory_list(request):
 def inventory_details(request, pk):
     inventory = get_object_or_404(
          models.Inventory,
-         pk=pk,
-         is_available=True
+         pk=pk
     )
     return render(request, 'stock/inventory_details.html', {
         'inventory': inventory
@@ -51,8 +50,7 @@ def inventory_create(request):
 def inventory_edit(request, pk):
     inventory = get_object_or_404(
          models.Inventory,
-         pk=pk,
-         is_available=True
+         pk=pk
     )
     form = forms.InventoryForm(instance=inventory)
     
