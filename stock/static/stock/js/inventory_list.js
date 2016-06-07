@@ -21,10 +21,11 @@ $(document).ready(function(){
 			data: {
 				"search_term": $("#search_term").val(),
 				"search_type": $("#search_type").val(),
-				"sort_by_item": null,
-				"sort_by_dir": null,
+				"sort_by_item": $("#sort_by_item").val(),
+				"sort_by_dir": $("#sort_by_dir").val(),
+				"search_page": $("#search_page").val(),
 				"csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
-			},
+			},			
 			success: searchSuccess,
 			dataType: "html"			
 		});		
@@ -38,6 +39,11 @@ $(document).ready(function(){
 		if($(this).hasClass("sort-desc")){
 			sort_by_dir = "DESC";
 		}
+		
+		var search_page = $("#current-page").text();
+		$("#sort_by_item").val(sort_by_item);
+		$("#sort_by_dir").val(sort_by_dir);
+		$("#search_page").val(search_page);
 
 		$.ajax({
 			type: "POST",
@@ -47,6 +53,29 @@ $(document).ready(function(){
 				"search_type": $("#search_type").val(),
 				"sort_by_item": sort_by_item,
 				"sort_by_dir": sort_by_dir,
+				"search_page": search_page,
+				"csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
+			},
+			success: searchSuccess,
+			dataType: "html"			
+		});	
+	});
+	
+	$(document).on("click", ".pagination-btn", function (e) {		
+		var class_id_name = e.target.id;
+		var search_page = class_id_name.replace("page-", "");
+		
+		$("#search_page").val(search_page);
+		
+		$.ajax({
+			type: "POST",
+			url: "/stock/inventory/search/",
+			data: {
+				"search_term": $("#search_term").val(),
+				"search_type": $("#search_type").val(),
+				"sort_by_item": $("#sort_by_item").val(),
+				"sort_by_dir": $("#sort_by_dir").val(),
+				"search_page": search_page,
 				"csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
 			},
 			success: searchSuccess,

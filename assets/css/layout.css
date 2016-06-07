@@ -790,13 +790,23 @@ table, tr, td {
 }
 
 .noteMsg, .alert-box.radius {
-    background: aquamarine;
+    background: #87F557;
     text-align: center;
     font-size: 16px;
     padding: 5px;
     font-style: italic;
-    border: 2px solid violet;
-    color: darkblue;
+    border: 2px solid #BBC30F;
+    color: #390FEC;
+}
+
+.alert-box.error.radius {
+    background: #F8F910;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    font-style: italic;
+    border: 1px solid #C507C5;
+    color: #FF0707;
 }
 
 .alert-box.radius a.close {
@@ -812,4 +822,13 @@ table, tr, td {
     font-size: 16px;
     background: #8A90DA;
     padding: 20px;
+}
+
+.pagination {
+	font-family: monospace;
+    text-align: center;
+    padding-top: 15px;
+    font-size: large;
+    font-weight: bold;
+    color: blue;
 }

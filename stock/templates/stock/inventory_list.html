@@ -7,6 +7,9 @@
  
 		<form method="get">
 			{% csrf_token %}
+			<input id="search_page" type="hidden" name="search_page" value="1"/>
+			<input id="sort_by_item" type="hidden" name="sort_by_item" value=""/>
+			<input id="sort_by_dir" type="hidden" name="sort_by_dir" value=""/>
 		    <input id="search_term" type="search" name="search_term" value=""/>
 		    <select id="search_type" name="search_type" class="customDropDown">
 		        <option value=""> All Criterias </option>
@@ -17,8 +20,7 @@
 		        <option value="Color"       >Color</option>
 		        <option value="ItemType"    >Item Type</option>
 		    </select>
-		    <input class="search-btn" type="submit" value="Search" />
-		
+		    <input class="search-btn" type="submit" value="Search" />		
 		</form>
     
     	<h3>List of items:</h3>    	

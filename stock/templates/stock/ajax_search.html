@@ -16,7 +16,7 @@
             <th width="10%">
             	<a href="#" class="sort-btn {{ sort.color|default:'sort-asc' }}" id="sort-color" title="Click to reorder list">Color</a>						
             </th>
-            <th>
+            <th width="10%">
            		<a href="#" class="sort-btn {{ sort.itemType|default:'sort-asc' }}" id="sort-itemType" title="Click to reorder list">Item Type</a>
             </th>
             <th>
@@ -59,6 +59,23 @@
         </tr>
     {% endfor %}
     </table>
+    
+	<div class="pagination">
+	    <span class="step-links">
+	        {% if inventories.has_previous %}
+	            <a class="pagination-btn" id="page-{{ inventories.previous_page_number }}" style="cursor: pointer">previous</a>
+	        {% endif %}
+	
+	        <span class="current">
+	            Page <span id="current-page">{{ inventories.number }}</span> of {{ inventories.paginator.num_pages }}
+	        </span>
+	
+	        {% if inventories.has_next %}
+	            <a class="pagination-btn" id="page-{{ inventories.next_page_number }}" style="cursor: pointer">next</a>
+	        {% endif %}
+	    </span>
+	</div>
+    
 {% else %}
   		<div><p class="no-result">No inventory items were found for entered criteria.</p></div>
 {% endif %} 

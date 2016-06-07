@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum, Count
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import logging
 
 from . import forms
@@ -12,13 +13,25 @@ from . import models
 
 # Standard instance of a logger with __name__
 logger = logging.getLogger(__name__)
+global_pagination = 5
 
 # Create your views here.
 @login_required
 def inventory_list(request): 
     inventories = models.Inventory.objects.filter(
          is_available=True
-    )
+    )    
+    page = request.GET.get('page')
+    paginator = Paginator(inventories, global_pagination) # Show 3 contacts per page
+    try:
+        inventories = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        inventories = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        inventories = paginator.page(paginator.num_pages)    
+    
     return render(request, 'stock/inventory_list.html', {
         'inventories': inventories
     })
@@ -113,9 +126,11 @@ def inventory_search(request):
     if request.method == 'POST':
         search_text = request.POST['search_term']
         search_criteria = request.POST['search_type']
+        search_page = request.POST['search_page']
     else:
         search_text = ''
         search_criteria = ''
+        search_page = '1'
 
     sort = {}
     sort['name'] = "sort-asc"
@@ -204,7 +219,18 @@ def inventory_search(request):
             inventories = inventories.order_by("itemType__type_name")
         elif request.POST['sort_by_dir'] and request.POST['sort_by_dir'] == "DESC":
             sort['itemType'] = "sort-asc"
-            inventories = inventories.order_by("-itemType__type_name")  
+            inventories = inventories.order_by("-itemType__type_name")
+            
+    page = int(search_page)
+    paginator = Paginator(inventories, global_pagination) # Show 3 contacts per page
+    try:
+        inventories = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        inventories = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        inventories = paginator.page(paginator.num_pages)            
         
     return render_to_response('stock/ajax_search.html',{
         'inventories': inventories,
