@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404, render, render_to_response
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum, Count
+from django.contrib.auth.decorators import login_required
 import logging
 
 from . import forms
@@ -12,6 +14,7 @@ from . import models
 logger = logging.getLogger(__name__)
 
 # Create your views here.
+@login_required
 def inventory_list(request): 
     inventories = models.Inventory.objects.filter(
          is_available=True
@@ -19,8 +22,9 @@ def inventory_list(request):
     return render(request, 'stock/inventory_list.html', {
         'inventories': inventories
     })
-    
-    
+
+
+@login_required    
 def inventory_details(request, pk):
     #inventory = get_object_or_404(
     #     models.Inventory,
@@ -40,6 +44,7 @@ def inventory_details(request, pk):
         })
     
 
+@login_required
 def inventory_create(request):
     form = forms.InventoryForm()
     
@@ -60,7 +65,8 @@ def inventory_create(request):
         'form': form
     })       
     
-    
+
+@login_required    
 def inventory_edit(request, pk):    
     #inventory = get_object_or_404(
     #     models.Inventory,
@@ -89,7 +95,8 @@ def inventory_edit(request, pk):
             'form': form
         })
     
-    
+
+@login_required    
 def inventory_delete(request, pk):
     inventory = get_object_or_404(
          models.Inventory,
@@ -101,6 +108,7 @@ def inventory_delete(request, pk):
     return HttpResponseRedirect(reverse('stock:list')) 
 
 
+@login_required
 def inventory_search(request):
     if request.method == 'POST':
         search_text = request.POST['search_term']
@@ -219,3 +227,50 @@ def dashboard(request):
     })
 
 
+@login_required
+def logout_user(request):
+    logout(request)
+    form = forms.UserForm(request.POST or None)
+
+    return render(request, 'stock/login.html',{
+        'form': form
+    })
+
+
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)                
+                return HttpResponseRedirect(reverse('stock:list'))
+            else:
+                messages.error(request, 
+                     "Your account has been disabled!")
+                return render(request, 'stock/login.html')
+        else:
+            messages.error(request, 
+                     "Invalid login credentals!")
+            return render(request, 'stock/login.html')
+    return render(request, 'stock/login.html')
+
+
+def register(request):
+    form = forms.UserForm(request.POST or None)
+    if form.is_valid():
+        user = form.save(commit=False)
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user.set_password(password)
+        user.save()
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('stock:list'))
+
+    return render(request, 'stock/register.html',{
+        'form': form
+    })

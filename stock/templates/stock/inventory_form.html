@@ -13,7 +13,7 @@
 		
 		<form method="POST" action="" enctype="multipart/form-data">
 			{% csrf_token %}
-			{{ form.as_p }}
+			{% include 'stock/form_template.html' %}
 			<input type="submit" class="button" value="Save">
 		</form>
 		

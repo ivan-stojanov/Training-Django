@@ -21,9 +21,15 @@
                 <div class="float-right">
                     <nav>
                         <ul id="menu">
-							<li><a href="{% url 'home' %}">Home</a></li>
-                            <li><a href="{% url 'stock:list' %}">Inventory List</a></li>
-                            <li><a href="{% url 'stock:dashboard' %}">Dashboard</a></li>
+							<!-- <li><a href="{% url 'home' %}">Home</a></li>  -->
+							<li><a href="{% url 'stock:dashboard' %}">Dashboard</a></li>
+							{% if user.is_authenticated %}
+								<li><a href="{% url 'stock:list' %}">Inventory List</a></li>
+								<li><a href="{% url 'stock:logout' %}">Log Out ({{ user.username }})</a></li>
+							{% endif %}                            
+                            {% if not user.is_authenticated %}
+                            	<li><a href="{% url 'stock:login' %}">Log In</a></li>
+                            {% endif %}
                         </ul>
                     </nav>
                 </div>
