@@ -789,7 +789,7 @@ table, tr, td {
     padding: 10px;
 }
 
-.noteMsg, .alert-box.success.radius {
+.noteMsg, .alert-box.radius {
     background: aquamarine;
     text-align: center;
     font-size: 16px;
@@ -799,7 +799,7 @@ table, tr, td {
     color: darkblue;
 }
 
-.alert-box.success.radius a.close {
+.alert-box.radius a.close {
     float: right;
     vertical-align: middle;
     color: red;
