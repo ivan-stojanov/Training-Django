@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum, Count
 import logging
@@ -22,13 +22,22 @@ def inventory_list(request):
     
     
 def inventory_details(request, pk):
-    inventory = get_object_or_404(
-         models.Inventory,
-         pk=pk
-    )
-    return render(request, 'stock/inventory_details.html', {
-        'inventory': inventory
-    })
+    #inventory = get_object_or_404(
+    #     models.Inventory,
+    #     pk=pk
+    #)
+    try:
+        inventory = models.Inventory.objects.select_related(
+            'itemType', 'color'                                           
+        ).get(
+             pk=pk
+        )
+    except models.Inventory.DoesNotExist:
+        raise Http404
+    else:
+        return render(request, 'stock/inventory_details.html', {
+            'inventory': inventory
+        })
     
 
 def inventory_create(request):
@@ -52,24 +61,33 @@ def inventory_create(request):
     })       
     
     
-def inventory_edit(request, pk):
-    inventory = get_object_or_404(
-         models.Inventory,
-         pk=pk
-    )
-    form = forms.InventoryForm(instance=inventory)
-    
-    if request.method == 'POST':
-        form = forms.InventoryForm(instance=inventory, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 
-                             "Inventory Updated: {}!".format(form.cleaned_data['name']))
-            return HttpResponseRedirect(inventory.get_absolute_url())  
-    
-    return render(request, 'stock/inventory_form.html', {
-        'form': form
-    })
+def inventory_edit(request, pk):    
+    #inventory = get_object_or_404(
+    #     models.Inventory,
+    #     pk=pk
+    #)
+    try:
+        inventory = models.Inventory.objects.select_related(
+            'itemType', 'color'                                           
+        ).get(
+             pk=pk
+        )
+    except models.Inventory.DoesNotExist:
+        raise Http404
+    else:
+        form = forms.InventoryForm(instance=inventory)
+        
+        if request.method == 'POST':
+            form = forms.InventoryForm(instance=inventory, data=request.POST, files=request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 
+                                 "Inventory Updated: {}!".format(form.cleaned_data['name']))
+                return HttpResponseRedirect(inventory.get_absolute_url())  
+        
+        return render(request, 'stock/inventory_form.html', {
+            'form': form
+        })
     
     
 def inventory_delete(request, pk):
@@ -193,7 +211,7 @@ def dashboard(request):
     statistics = {}
     statistics['total_items'] = inventories.count()
     total_price = inventories.aggregate(total=Sum('price'))
-    statistics['average_price'] = total_price['total'] / float(statistics['total_items'])    
+    statistics['average_price'] = round(total_price['total'] / float(statistics['total_items']), 2)
     statistics['count_by_type'] = inventories.values('itemType__type_name').annotate(count=Count('itemType__type_name')).order_by('itemType__type_name')
     
     return render(request, 'stock/dashboard.html',{
